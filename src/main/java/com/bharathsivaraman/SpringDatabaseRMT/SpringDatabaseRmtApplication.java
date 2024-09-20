@@ -10,6 +10,4 @@ public class SpringDatabaseRmtApplication {
 	{
 		SpringApplication.run(SpringDatabaseRmtApplication.class, args);
 	}
-
-
 }
