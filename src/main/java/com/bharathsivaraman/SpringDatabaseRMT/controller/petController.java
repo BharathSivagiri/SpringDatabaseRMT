@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.*;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor //@AllArgsConstructor is a Lombok annotation that generates a constructor implicitly with arguments for all fields in the class.
+@AllArgsConstructor
 @RequestMapping("/pets")
 public class petController
 {

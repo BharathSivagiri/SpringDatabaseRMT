@@ -1,23 +1,35 @@
 package com.bharathsivaraman.SpringDatabaseRMT.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
-@Data //(From lombok package)Used to generate getters and setters
-@Entity //Used to represent a table in the database
-@Table(name = "pets") //Create and represent a table in the database
-@NoArgsConstructor //Generates a no-args constructor
+@Entity // This tells Hibernate to make a table out of this class
+@Data // This will generate getters and setters for all the fields
+@Table(name = "pet") // This will create a table called pet
+@NoArgsConstructor // This will generate a no-args constructor
+@AllArgsConstructor // This will generate a constructor with all the fields
 public class Pet
 {
-    @Id //Used to represent a primary key in the database
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//Generates a unique id for each record in the database
-    private Integer id;
-    private String name;
-    private String color;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // This will generate a primary key for the table
+    @Column(name = "ID") // This will create a column called ID
+    private Long id;
 
-    public Pet(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
+    @Column(name = "name_of_pet")
+    private String name;
+
+    @Column(name = "type_of_pet")
+    private String type;
+
+    @Column(name = "name_of_owner")
+    private String ownerName;
+
+    @Column(name = "price_of_pet")
+    private Double price;
+
+    @Column(name = "birth_date_of_pet")
+    private LocalDate birthDate;
 }
