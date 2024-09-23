@@ -1,5 +1,6 @@
 package com.bharathsivaraman.SpringDatabaseRMT.controller;
 
+import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.BasicValidationException;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 
@@ -18,8 +19,9 @@ public class PetController
 
     @PostMapping("/add") //@PostMapping[POST] is used to add a record to the database
     @ResponseStatus(HttpStatus.CREATED) //@ResponseStatus is used to set the status code of the response
-    public PetModel createPet(@RequestBody PetModel petModel)
+    public PetModel createPet(@RequestBody PetModel petModel) throws BasicValidationException
     {
+        petModel.validate();
         return petService.createPet(petModel);
     }
 

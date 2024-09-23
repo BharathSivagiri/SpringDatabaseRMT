@@ -1,10 +1,14 @@
 package com.bharathsivaraman.SpringDatabaseRMT.entities;
 
+import com.bharathsivaraman.SpringDatabaseRMT.enums.PetStatus;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
+import java.time.Period;
 
 @Entity // This tells Hibernate to make a table out of this class
 @Data // This will generate getters and setters for all the fields
@@ -14,11 +18,11 @@ import java.time.LocalDate;
 public class Pet
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // This will generate a primary key for the table
-    @Column(name = "ID") // This will create a column called ID
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private int id;
 
-    @Column(name = "name_of_pet")
+    @Column(name = "name_of_pet", length = 50)
     private String name;
 
     @Column(name = "type_of_pet")
@@ -32,4 +36,16 @@ public class Pet
 
     @Column(name = "birth_date_of_pet")
     private LocalDate birthDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private PetStatus status;
+
+    @Transient
+    public Integer age;
+
+    public int getAge()
+    {
+        return Period.between(birthDate, LocalDate.now()).getYears();
+    }
 }

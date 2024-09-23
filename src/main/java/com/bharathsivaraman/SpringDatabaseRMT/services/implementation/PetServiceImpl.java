@@ -1,6 +1,7 @@
 package com.bharathsivaraman.SpringDatabaseRMT.services.implementation;
 
 import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
+import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.DataNotFoundException;
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetMapper;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
 import com.bharathsivaraman.SpringDatabaseRMT.repo.PetRepository;
@@ -32,7 +33,7 @@ public class PetServiceImpl implements PetService
     public PetModel getPetById(Long id)
     {
         Pet pet = petRepository.findById((long) Math.toIntExact(id))
-                .orElseThrow(() -> new RuntimeException("Pet not found"));
+                .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id));
         return petMapper.toModel(pet);
     }
 
@@ -47,8 +48,8 @@ public class PetServiceImpl implements PetService
     @Override
     public PetModel updatePet(Long id, PetModel petModel)
     {
-        Pet existingPet = petRepository.findById((long) Math.toIntExact(id))
-                .orElseThrow(() -> new RuntimeException("Pet not found"));
+        Pet existingPet = petRepository.findById((id))
+                .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id));
 
         existingPet.setName(petModel.getName());
         existingPet.setType(petModel.getType());
