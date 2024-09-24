@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 
 
 @Component // This annotation is used to indicate that this class is a Spring component
-public class PetMapper {
+public class PetMapper
+{
     public Pet toEntity(PetModel petModel) // This method is used to convert a PetModel object to a Pet object
     {
         Pet pet = new Pet();
