@@ -1,9 +1,13 @@
 package com.bharathsivaraman.SpringDatabaseRMT.services.implementation;
 
 import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
+import com.bharathsivaraman.SpringDatabaseRMT.entities.PetDiet;
 import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.DataNotFoundException;
+import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetDietMapper;
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetMapper;
+import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
+import com.bharathsivaraman.SpringDatabaseRMT.repo.PetDietRepository;
 import com.bharathsivaraman.SpringDatabaseRMT.repo.PetRepository;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
@@ -21,6 +25,9 @@ public class PetServiceImpl implements PetService
 {
     private final PetRepository petRepository;
     private final PetMapper petMapper;
+
+    private final PetDietRepository petDietRepository;
+    private final PetDietMapper petDietMapper;
 
     @Override
     public PetModel createPet(PetModel petModel)
@@ -45,29 +52,54 @@ public class PetServiceImpl implements PetService
                 .map(petMapper::toModel)
                 .collect(Collectors.toList());
     }
-        @Override
-        public PetModel updatePet(Long id, PetModel petModel)
-        {
-            Pet existingPet = petRepository.findById(id)
-                    .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id));
+    @Override
+    public PetModel updatePet(Long id, PetModel petModel)
+    {
+        Pet existingPet = petRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id));
 
-            existingPet.setName(petModel.getName());
-            existingPet.setType(petModel.getType());
-            existingPet.setOwnerName(petModel.getOwnerName());
-            existingPet.setPrice(Double.valueOf(petModel.getPrice()));
+        existingPet.setName(petModel.getName());
+        existingPet.setType(petModel.getType());
+        existingPet.setOwnerName(petModel.getOwnerName());
+        existingPet.setPrice(Double.valueOf(petModel.getPrice()));
 
-            try {
-                existingPet.setBirthDate(DateUtils.convertToDate(petModel.getBirthDate()));
-            } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("Invalid date format. Please use yyyyMMdd format.", e);
-            }
-
-            Pet updatedPet = petRepository.save(existingPet);
-            return petMapper.toModel(updatedPet);
+        try {
+            existingPet.setBirthDate(DateUtils.convertToDate(petModel.getBirthDate()));
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format. Please use yyyyMMdd format.", e);
         }
+
+        Pet updatedPet = petRepository.save(existingPet);
+        return petMapper.toModel(updatedPet);
+    }
+
     @Override
     public void deletePet(Long id)
     {
         petRepository.deleteById((long) Math.toIntExact(id));
     }
+
+    @Override
+    public PetDietModel createPetDiet(Long petId, PetDietModel petDietModel)
+    {
+        PetDiet petDiet = petDietMapper.toDEntity(petDietModel);
+        PetDiet savedPetDiet = petDietRepository.save(petDiet);
+        return petDietMapper.toDModel(savedPetDiet);
+    }
+
+    @Override
+    public PetDietModel getPetDietById(Long petId, Long dietId) {
+        return null;
+    }
+
+    @Override
+    public PetDietModel updatePetDiet(Long petId, Long dietId, PetDietModel petDietModel) {
+        return null;
+    }
+
+    @Override
+    public void deletePetDiet(Long petId, Long dietId) {
+
+    }
+
 }
