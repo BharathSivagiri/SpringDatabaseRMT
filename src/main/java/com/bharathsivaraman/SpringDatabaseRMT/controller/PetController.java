@@ -17,32 +17,32 @@ public class PetController
 {
     private final PetService petService;
 
-    @PostMapping("/add")
+    @PostMapping("/add") //POST
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody PetModel createPet(@Valid @RequestBody PetModel petModel) throws BasicValidationException
     {
         return petService.createPet(petModel);
     }
 
-    @GetMapping("/petId/{id}")
+    @GetMapping("/petId/{id}") //GET
     public PetModel getPetById(@PathVariable Long id)
     {
         return petService.getPetById(id);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all") //GET
     public List<PetModel> getAllPets()
     {
         return petService.getAllPets();
     }
 
-    @PutMapping("/put/{id}")
+    @PutMapping("/put/{id}") //PUT
     public PetModel updatePet(@PathVariable Long id, @RequestBody PetModel petModel)
     {
         return petService.updatePet(id, petModel);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}") //DELETE
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePet(@PathVariable Long id)
     {

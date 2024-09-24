@@ -6,13 +6,12 @@ import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetMapper;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
 import com.bharathsivaraman.SpringDatabaseRMT.repo.PetRepository;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
+import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
+import java.time.format.DateTimeParseException;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,23 +45,26 @@ public class PetServiceImpl implements PetService
                 .map(petMapper::toModel)
                 .collect(Collectors.toList());
     }
+        @Override
+        public PetModel updatePet(Long id, PetModel petModel)
+        {
+            Pet existingPet = petRepository.findById(id)
+                    .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id));
 
-    @Override
-    public PetModel updatePet(Long id, PetModel petModel)
-    {
-        Pet existingPet = petRepository.findById((id))
-                .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id));
+            existingPet.setName(petModel.getName());
+            existingPet.setType(petModel.getType());
+            existingPet.setOwnerName(petModel.getOwnerName());
+            existingPet.setPrice(Double.valueOf(petModel.getPrice()));
 
-        existingPet.setName(petModel.getName());
-        existingPet.setType(petModel.getType());
-        existingPet.setOwnerName(petModel.getOwnerName());
-        existingPet.setPrice(Double.valueOf(petModel.getPrice()));
-        existingPet.setBirthDate(LocalDate.parse(petModel.getBirthDate()));
+            try {
+                existingPet.setBirthDate(DateUtils.convertToDate(petModel.getBirthDate()));
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Invalid date format. Please use yyyyMMdd format.", e);
+            }
 
-        Pet updatedPet = petRepository.save(existingPet);
-        return petMapper.toModel(updatedPet);
-    }
-
+            Pet updatedPet = petRepository.save(existingPet);
+            return petMapper.toModel(updatedPet);
+        }
     @Override
     public void deletePet(Long id)
     {
