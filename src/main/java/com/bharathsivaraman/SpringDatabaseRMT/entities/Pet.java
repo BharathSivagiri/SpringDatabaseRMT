@@ -41,9 +41,9 @@ public class Pet
     @Column(name = "status")
     private PetStatus status;
 
-//    @OneToOne(mappedBy = "pet", cascade = CascadeType.ALL)
-////    @JoinColumn(name = "diet_id")
-//    private PetDiet petDiet;
+    @OneToOne(mappedBy = "pet", cascade = CascadeType.ALL)
+//    @JoinColumn(name = "diet_id")
+    private PetDiet petDiet;
 
     @Transient
     public Integer age;

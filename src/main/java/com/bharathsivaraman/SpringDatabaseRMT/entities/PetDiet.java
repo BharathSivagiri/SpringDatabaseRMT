@@ -39,7 +39,7 @@ public class PetDiet
     @Column(name = "diet_status", nullable = false)
     private PetDietStatus diet;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "pet_id")
     private Pet pet;
 }
