@@ -19,30 +19,31 @@ public class Pet
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "pet_id", nullable = false)
     private int id;
 
-    @Column(name = "name_of_pet", length = 50)
+    @Column(name = "name_of_pet", nullable = false)
     private String name;
 
-    @Column(name = "type_of_pet")
+    @Column(name = "type_of_pet", nullable = false)
     private String type;
 
-    @Column(name = "name_of_owner")
+    @Column(name = "name_of_owner", nullable = false)
     private String ownerName;
 
-    @Column(name = "price_of_pet")
+    @Column(name = "price_of_pet", nullable = false)
     private Double price;
 
-    @Column(name = "birth_date_of_pet")
+    @Column(name = "birth_date_of_pet", nullable = false)
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private PetStatus status;
 
-//    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<PetDiet> petDiet;
+//    @OneToOne(mappedBy = "pet", cascade = CascadeType.ALL)
+////    @JoinColumn(name = "diet_id")
+//    private PetDiet petDiet;
 
     @Transient
     public Integer age;

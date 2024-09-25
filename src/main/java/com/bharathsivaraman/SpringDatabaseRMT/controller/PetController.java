@@ -1,6 +1,7 @@
 package com.bharathsivaraman.SpringDatabaseRMT.controller;
 
 import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.BasicValidationException;
+import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 
@@ -44,8 +45,40 @@ public class PetController
 
     @DeleteMapping("/delete/{id}") //DELETE
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePet(@PathVariable Long id)
+    public PetModel deletePet(@PathVariable Long id)
     {
-        petService.deletePet(id);
+        return petService.deletePet(id);
+    }
+
+    @PostMapping("/diets/add") //POST
+    @ResponseStatus(HttpStatus.CREATED)
+    public PetDietModel createPetDiet(@RequestBody PetDietModel petDietModel)
+    {
+        return petService.createPetDiet(petDietModel);
+    }
+
+    @GetMapping("/diets/all") //GET
+    public List<PetDietModel> getAllPetDiets()
+    {
+        return petService.getAllPetDiets();
+    }
+
+    @GetMapping("/diets/{dietId}") //GET
+    public PetDietModel getPetDietById(@PathVariable Long dietId)
+    {
+        return petService.getPetDietById(dietId);
+    }
+
+    @PutMapping("/diets/update/{dietId}") //PUT
+    public PetDietModel updatePetDiet(@PathVariable Long dietId, @RequestBody PetDietModel petDietModel)
+    {
+        return petService.updatePetDiet(dietId, petDietModel);
+    }
+
+    @DeleteMapping("/diets/delete/{dietId}") //DELETE
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public PetDietModel deletePetDiet(@PathVariable Long dietId)
+    {
+        return petService.deletePetDiet(dietId);
     }
 }

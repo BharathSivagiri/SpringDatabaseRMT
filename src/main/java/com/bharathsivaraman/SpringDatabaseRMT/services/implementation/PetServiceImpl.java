@@ -2,6 +2,7 @@ package com.bharathsivaraman.SpringDatabaseRMT.services.implementation;
 
 import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
 import com.bharathsivaraman.SpringDatabaseRMT.entities.PetDiet;
+import com.bharathsivaraman.SpringDatabaseRMT.enums.PetDietStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.DataNotFoundException;
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetDietMapper;
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetMapper;
@@ -74,13 +75,17 @@ public class PetServiceImpl implements PetService
     }
 
     @Override
-    public void deletePet(Long id)
+    public PetModel deletePet(Long id)
     {
-        petRepository.deleteById((long) Math.toIntExact(id));
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id));
+        PetModel petModel = petMapper.toModel(pet);
+        petRepository.deleteById(id);
+        return petModel;
     }
 
     @Override
-    public PetDietModel createPetDiet(Long petId, PetDietModel petDietModel)
+    public PetDietModel createPetDiet(PetDietModel petDietModel)
     {
         PetDiet petDiet = petDietMapper.toDEntity(petDietModel);
         PetDiet savedPetDiet = petDietRepository.save(petDiet);
@@ -88,18 +93,45 @@ public class PetServiceImpl implements PetService
     }
 
     @Override
-    public PetDietModel getPetDietById(Long petId, Long dietId) {
-        return null;
+    public PetDietModel getPetDietById(Long dietId)
+    {
+        PetDiet petDiet = petDietRepository.findById(dietId)
+                .orElseThrow(() -> new DataNotFoundException("Pet Diet not found with id: " + dietId));
+        return petDietMapper.toDModel(petDiet);
     }
 
     @Override
-    public PetDietModel updatePetDiet(Long petId, Long dietId, PetDietModel petDietModel) {
-        return null;
+    public List<PetDietModel> getAllPetDiets()
+    {
+        return petDietRepository.findAll().stream()
+                .map(petDietMapper::toDModel)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void deletePetDiet(Long petId, Long dietId) {
+    public PetDietModel updatePetDiet(Long dietId, PetDietModel petDietModel)
+    {
+        PetDiet existingPetDiet = petDietRepository.findById(dietId)
+                .orElseThrow(() -> new DataNotFoundException("Pet Diet not found with id: " + dietId));
 
+        existingPetDiet.setDietName(petDietModel.getDietName());
+        existingPetDiet.setDescription(petDietModel.getDescription());
+        existingPetDiet.setStartDate(DateUtils.convertToDate(petDietModel.getStartDate()));
+        existingPetDiet.setEndDate(DateUtils.convertToDate(petDietModel.getEndDate()));
+        existingPetDiet.setDiet(PetDietStatus.valueOf(petDietModel.getDiet().toUpperCase()));
+
+        PetDiet updatedPetDiet = petDietRepository.save(existingPetDiet);
+        return petDietMapper.toDModel(updatedPetDiet);
+    }
+
+    @Override
+    public PetDietModel deletePetDiet(Long dietId)
+    {
+        PetDiet petDiet = petDietRepository.findById(dietId)
+                .orElseThrow(() -> new DataNotFoundException("Pet Diet not found with id: " + dietId));
+        PetDietModel petDietModel = petDietMapper.toDModel(petDiet);
+        petDietRepository.deleteById(dietId);
+        return petDietModel;
     }
 
 }

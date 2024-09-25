@@ -1,6 +1,7 @@
 package com.bharathsivaraman.SpringDatabaseRMT.entities;
 
 import com.bharathsivaraman.SpringDatabaseRMT.enums.PetDietStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,25 +20,26 @@ public class PetDiet
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "diet_id", nullable = false)
+    private int dietId;
 
-    @Column(name = "diet_name")
+    @Column(name = "diet_name", nullable = false)
     private String dietName;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "end_date")
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "diet_status")
+    @Column(name = "diet_status", nullable = false)
     private PetDietStatus diet;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_id")
     private Pet pet;
 }

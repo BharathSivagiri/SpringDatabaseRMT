@@ -15,13 +15,15 @@ public interface PetService
 
     PetModel updatePet(Long id, PetModel petModel);
 
-    void deletePet(Long id);
+    PetModel deletePet(Long id);
 
-    PetDietModel createPetDiet(Long petId, PetDietModel petDietModel);
+    PetDietModel createPetDiet(PetDietModel petDietModel);
 
-    PetDietModel getPetDietById(Long petId, Long dietId);
+    PetDietModel getPetDietById(Long dietId);
 
-    PetDietModel updatePetDiet(Long petId, Long dietId, PetDietModel petDietModel);
+    List<PetDietModel> getAllPetDiets();
 
-    void deletePetDiet(Long petId, Long dietId);
+    PetDietModel updatePetDiet(Long dietId, PetDietModel petDietModel);
+
+    PetDietModel deletePetDiet(Long dietId);
 }

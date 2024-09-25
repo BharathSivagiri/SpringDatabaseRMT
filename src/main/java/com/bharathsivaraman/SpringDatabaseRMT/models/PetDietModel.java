@@ -6,6 +6,7 @@ import lombok.Data;
 public class PetDietModel
 {
     private String id;
+    private String dietid;
     private String dietName;
     private String description;
     private String startDate;

@@ -29,6 +29,7 @@ public class PetModel
 
     private String status;
     private String age;
+
 }
 
 
