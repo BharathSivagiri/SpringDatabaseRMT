@@ -33,8 +33,9 @@ public class PetDietMapper
     public PetDietModel toDModel(PetDiet petDiet)
     {
         PetDietModel petDietModel = new PetDietModel();
+        Pet pet = new Pet();
 
-        petDietModel.setId(String.valueOf(petDiet.getDietId()));
+        petDietModel.setId(String.valueOf(pet.getId()));
         petDietModel.setDietid(String.valueOf(petDiet.getDietId()));
         petDietModel.setDietName(petDiet.getDietName());
         petDietModel.setDescription(petDiet.getDescription());
