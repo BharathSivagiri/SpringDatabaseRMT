@@ -18,6 +18,8 @@ public class PetController
 {
     private final PetService petService;
 
+    //Pet API
+
     @PostMapping("/add") //POST
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody PetModel createPet(@Valid @RequestBody PetModel petModel) throws BasicValidationException
@@ -49,6 +51,8 @@ public class PetController
     {
         return petService.deletePet(id);
     }
+
+    //Pet Diet API
 
     @PostMapping("/diets/add") //POST
     @ResponseStatus(HttpStatus.CREATED)

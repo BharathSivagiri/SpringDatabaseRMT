@@ -30,6 +30,8 @@ public class PetServiceImpl implements PetService
     private final PetDietRepository petDietRepository;
     private final PetDietMapper petDietMapper;
 
+    //Pet API Service Implementation
+
     @Override
     public PetModel createPet(PetModel petModel)
     {
@@ -83,6 +85,8 @@ public class PetServiceImpl implements PetService
         petRepository.deleteById(id);
         return petModel;
     }
+
+    //Pet Diet API Service Implementation
 
     @Override
     public PetDietModel createPetDiet(PetDietModel petDietModel)

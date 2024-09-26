@@ -18,7 +18,6 @@ public class PetModel
 
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Owner name must contain only letters and spaces")
     @Size(min=2,max = 30, message = "Owner name must be 10-30 characters")
-    private String ownerId;
     private String ownerName;
 
     @Pattern(regexp = "^\\d+(\\.\\d{1,2})?$", message = "Price must be a valid number with up to 2 decimal places")

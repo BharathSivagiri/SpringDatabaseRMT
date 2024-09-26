@@ -4,10 +4,12 @@ import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
 import com.bharathsivaraman.SpringDatabaseRMT.entities.PetDiet;
 import com.bharathsivaraman.SpringDatabaseRMT.enums.PetDietStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
-
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
 import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
+
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class PetDietMapper
