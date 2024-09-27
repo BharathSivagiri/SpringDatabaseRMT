@@ -1,5 +1,6 @@
 package com.bharathsivaraman.SpringDatabaseRMT.entities;
 
+import com.bharathsivaraman.SpringDatabaseRMT.enums.DBRecordStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.enums.PetStatus;
 
 import jakarta.persistence.*;
@@ -37,12 +38,20 @@ public class Pet
     @Column(name = "birth_date_of_pet", nullable = false)
     private LocalDate birthDate;
 
+    @Column(name = "created_date", nullable = false)
+    private LocalDate createdDate;
+
+    @Column(name = "updated_date", nullable = false)
+    private LocalDate updatedDate;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private PetStatus status;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL) //mappedBy is the name of the object in the PetDiet class
-    private List<PetDiet> petDiet;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "record_status")
+    private DBRecordStatus recStatus;
+
 
     @Transient
     public Integer age;

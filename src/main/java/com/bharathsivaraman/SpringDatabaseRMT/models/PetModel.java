@@ -26,6 +26,13 @@ public class PetModel
     @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "Birth date must be in the format YYYYMMDD")
     private String birthDate;
 
+    @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "Created date must be in the format YYYYMMDD")
+    private String createdDate;
+
+    @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "Updated date must be in the format YYYYMMDD")
+    private String updatedDate;
+
+    private String recStatus;
     private String status;
     private String age;
 

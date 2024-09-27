@@ -1,5 +1,6 @@
 package com.bharathsivaraman.SpringDatabaseRMT.entities;
 
+import com.bharathsivaraman.SpringDatabaseRMT.enums.DBRecordStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.enums.PetDietStatus;
 
 import jakarta.persistence.Column;
@@ -39,7 +40,17 @@ public class PetDiet
     @Column(name = "diet_status", nullable = false)
     private PetDietStatus diet;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @Column(name = "created_diet_date", nullable = false)
+    private LocalDate createdDietDate;
+
+    @Column(name = "updated_diet_date", nullable = false)
+    private LocalDate updatedDietDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "record_status")
+    private DBRecordStatus recStatus;
+
+    @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
 }

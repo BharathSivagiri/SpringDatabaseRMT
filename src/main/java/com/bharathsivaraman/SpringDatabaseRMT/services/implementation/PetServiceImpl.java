@@ -2,7 +2,9 @@ package com.bharathsivaraman.SpringDatabaseRMT.services.implementation;
 
 import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
 import com.bharathsivaraman.SpringDatabaseRMT.entities.PetDiet;
+import com.bharathsivaraman.SpringDatabaseRMT.enums.DBRecordStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.enums.PetDietStatus;
+import com.bharathsivaraman.SpringDatabaseRMT.enums.PetStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.DataNotFoundException;
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetDietMapper;
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetMapper;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.format.DateTimeParseException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service //@Service is a specialization of the @Component annotation that indicates that it's a service class.
@@ -65,9 +68,13 @@ public class PetServiceImpl implements PetService
         existingPet.setType(petModel.getType());
         existingPet.setOwnerName(petModel.getOwnerName());
         existingPet.setPrice(Double.valueOf(petModel.getPrice()));
+        existingPet.setStatus(PetStatus.valueOf(petModel.getStatus().toUpperCase()));
+        existingPet.setRecStatus(DBRecordStatus.valueOf(petModel.getRecStatus().toUpperCase()));
 
         try {
             existingPet.setBirthDate(DateUtils.convertToDate(petModel.getBirthDate()));
+            existingPet.setCreatedDate(DateUtils.convertToDate(petModel.getCreatedDate()));
+            existingPet.setUpdatedDate(DateUtils.convertToDate(petModel.getUpdatedDate()));
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid date format. Please use yyyyMMdd format.", e);
         }
@@ -91,7 +98,12 @@ public class PetServiceImpl implements PetService
     @Override
     public PetDietModel createPetDiet(PetDietModel petDietModel)
     {
-        PetDiet petDiet = petDietMapper.toDEntity(petDietModel);
+       Optional<Pet> petOptional = petRepository.findById(Integer.parseInt(petDietModel.getId()));
+        if (petOptional.isEmpty())
+        {
+            throw new IllegalArgumentException("Pet not found with id: " + petDietModel.getId());
+        }
+        PetDiet petDiet = petDietMapper.toDEntity(petDietModel,petOptional.get());
         PetDiet savedPetDiet = petDietRepository.save(petDiet);
         return petDietMapper.toDModel(savedPetDiet);
     }
@@ -120,9 +132,20 @@ public class PetServiceImpl implements PetService
 
         existingPetDiet.setDietName(petDietModel.getDietName());
         existingPetDiet.setDescription(petDietModel.getDescription());
-        existingPetDiet.setStartDate(DateUtils.convertToDate(petDietModel.getStartDate()));
-        existingPetDiet.setEndDate(DateUtils.convertToDate(petDietModel.getEndDate()));
         existingPetDiet.setDiet(PetDietStatus.valueOf(petDietModel.getDiet().toUpperCase()));
+        existingPetDiet.setRecStatus(DBRecordStatus.valueOf(petDietModel.getRecStatus().toUpperCase()));
+
+        try
+        {
+            existingPetDiet.setStartDate(DateUtils.convertToDate(petDietModel.getStartDate()));
+            existingPetDiet.setEndDate(DateUtils.convertToDate(petDietModel.getEndDate()));
+            existingPetDiet.setCreatedDietDate(DateUtils.convertToDate(petDietModel.getCreatedDietDate()));
+            existingPetDiet.setUpdatedDietDate(DateUtils.convertToDate(petDietModel.getUpdatedDietDate()));
+        }
+        catch (DateTimeParseException e)
+        {
+            throw new IllegalArgumentException("Invalid date format. Please use yyyyMMdd format.", e);
+        }
 
         PetDiet updatedPetDiet = petDietRepository.save(existingPetDiet);
         return petDietMapper.toDModel(updatedPetDiet);

@@ -1,6 +1,7 @@
 package com.bharathsivaraman.SpringDatabaseRMT.mapper;
 
 import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
+import com.bharathsivaraman.SpringDatabaseRMT.enums.DBRecordStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.enums.PetStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
 
@@ -20,7 +21,10 @@ public class PetMapper
         pet.setOwnerName(petModel.getOwnerName());
         pet.setPrice(Double.valueOf(petModel.getPrice()));
         pet.setBirthDate(DateUtils.convertToDate(petModel.getBirthDate()));
+        pet.setCreatedDate(DateUtils.convertToDate(petModel.getCreatedDate()));
+        pet.setUpdatedDate(DateUtils.convertToDate(petModel.getUpdatedDate()));
         pet.setStatus(PetStatus.valueOf(petModel.getStatus().toUpperCase()));
+        pet.setRecStatus(DBRecordStatus.valueOf(petModel.getRecStatus().toUpperCase()));
         return pet;
     }
 
@@ -34,6 +38,9 @@ public class PetMapper
         petModel.setOwnerName(pet.getOwnerName());
         petModel.setPrice(String.valueOf(pet.getPrice()));
         petModel.setBirthDate(DateUtils.convertToString(pet.getBirthDate()));
+        petModel.setCreatedDate(DateUtils.convertToString(pet.getCreatedDate()));
+        petModel.setUpdatedDate(DateUtils.convertToString(pet.getUpdatedDate()));
+        petModel.setRecStatus(pet.getRecStatus().name());
         petModel.setStatus(pet.getStatus().name());
         petModel.setAge(String.valueOf(pet.getAge()));
         return petModel;
