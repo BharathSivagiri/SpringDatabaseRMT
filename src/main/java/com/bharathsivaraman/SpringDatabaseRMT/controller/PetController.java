@@ -3,11 +3,13 @@ package com.bharathsivaraman.SpringDatabaseRMT.controller;
 import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.BasicValidationException;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
+import com.bharathsivaraman.SpringDatabaseRMT.models.PetWithDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -56,7 +58,7 @@ public class PetController
 
     @PostMapping("/diets/add") //POST
     @ResponseStatus(HttpStatus.CREATED)
-    public PetDietModel createPetDiet(@RequestBody PetDietModel petDietModel)
+    public PetDietModel createPetDiet(@Valid @RequestBody PetDietModel petDietModel) throws BasicValidationException
     {
         return petService.createPetDiet(petDietModel);
     }
@@ -85,4 +87,13 @@ public class PetController
     {
         return petService.deletePetDiet(dietId);
     }
+
+    //Get All Pets and its Diet by Pet ID
+
+    @GetMapping("/{id}/with-diet") //GET
+    public ResponseEntity<PetWithDietModel> getPetWithDiet(@PathVariable Long id) {
+        PetWithDietModel petWithDiet = petService.getPetWithDiet(id);
+        return ResponseEntity.ok(petWithDiet);
+    }
+
 }

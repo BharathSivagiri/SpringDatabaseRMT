@@ -6,10 +6,12 @@ import com.bharathsivaraman.SpringDatabaseRMT.enums.DBRecordStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.enums.PetDietStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.enums.PetStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.DataNotFoundException;
+import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.DateInvalidException;
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetDietMapper;
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetMapper;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
+import com.bharathsivaraman.SpringDatabaseRMT.models.PetWithDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.repo.PetDietRepository;
 import com.bharathsivaraman.SpringDatabaseRMT.repo.PetRepository;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
@@ -76,7 +78,7 @@ public class PetServiceImpl implements PetService
             existingPet.setCreatedDate(DateUtils.convertToDate(petModel.getCreatedDate()));
             existingPet.setUpdatedDate(DateUtils.convertToDate(petModel.getUpdatedDate()));
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid date format. Please use yyyyMMdd format.", e);
+            throw new DateInvalidException("Invalid date format. Please use yyyyMMdd format.");
         }
 
         Pet updatedPet = petRepository.save(existingPet);
@@ -144,7 +146,7 @@ public class PetServiceImpl implements PetService
         }
         catch (DateTimeParseException e)
         {
-            throw new IllegalArgumentException("Invalid date format. Please use yyyyMMdd format.", e);
+            throw new DateInvalidException("Invalid date format. Please use yyyyMMdd format.");
         }
 
         PetDiet updatedPetDiet = petDietRepository.save(existingPetDiet);
@@ -159,6 +161,22 @@ public class PetServiceImpl implements PetService
         PetDietModel petDietModel = petDietMapper.toDModel(petDiet);
         petDietRepository.deleteById(dietId);
         return petDietModel;
+    }
+
+    //Pet ID displays all info from two tables
+    @Override
+    public PetWithDietModel getPetWithDiet(Long petId) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + petId));
+
+        PetModel petModel = petMapper.toModel(pet);
+
+        List<PetDiet> petDiets = petDietRepository.findByPet(pet);
+        List<PetDietModel> petDietModels = petDiets.stream()
+                .map(petDietMapper::toDModel)
+                .collect(Collectors.toList());
+
+        return new PetWithDietModel(petModel, petDietModels);
     }
 
 }

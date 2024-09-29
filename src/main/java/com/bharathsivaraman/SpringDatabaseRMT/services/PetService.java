@@ -2,6 +2,7 @@ package com.bharathsivaraman.SpringDatabaseRMT.services;
 
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
+import com.bharathsivaraman.SpringDatabaseRMT.models.PetWithDietModel;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface PetService
     PetDietModel updatePetDiet(Long dietId, PetDietModel petDietModel);
 
     PetDietModel deletePetDiet(Long dietId);
+
+    PetWithDietModel getPetWithDiet(Long petId);
+
 }
