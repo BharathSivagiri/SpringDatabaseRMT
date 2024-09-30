@@ -28,6 +28,7 @@ public interface PetService
 
     PetDietModel deletePetDiet(Long dietId);
 
-    PetWithDietModel getPetWithDiet(Long petId);
+    List<PetWithDietModel> getPetsWithDiet(Long id);
+
 
 }

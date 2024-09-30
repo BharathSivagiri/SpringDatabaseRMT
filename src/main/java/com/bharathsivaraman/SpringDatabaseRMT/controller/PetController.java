@@ -90,10 +90,11 @@ public class PetController
 
     //Get All Pets and its Diet by Pet ID
 
-    @GetMapping("/{id}/with-diet") //GET
-    public ResponseEntity<PetWithDietModel> getPetWithDiet(@PathVariable Long id) {
-        PetWithDietModel petWithDiet = petService.getPetWithDiet(id);
-        return ResponseEntity.ok(petWithDiet);
+    @GetMapping("/with-diet") //GET
+    public ResponseEntity<List<PetWithDietModel>> getPetsWithDiet(@RequestParam(required = false) Long id) {
+        List<PetWithDietModel> petsWithDiet = petService.getPetsWithDiet(id);
+        return ResponseEntity.ok(petsWithDiet);
     }
+
 
 }

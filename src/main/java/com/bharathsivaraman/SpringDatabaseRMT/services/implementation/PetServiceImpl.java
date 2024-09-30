@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.format.DateTimeParseException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -164,19 +165,32 @@ public class PetServiceImpl implements PetService
     }
 
     //Pet ID displays all info from two tables
+
     @Override
-    public PetWithDietModel getPetWithDiet(Long petId) {
-        Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + petId));
+    public List<PetWithDietModel> getPetsWithDiet(Long id)
+    {
+        if (id != null)
+        {
+            Pet pet = petRepository.findById(id)
+                    .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id));
+            return Collections.singletonList(createPetWithDietModel(pet));
+        }
+        else
+        {
+            List<Pet> allPets = petRepository.findAll();
+            return allPets.stream()
+                    .map(this::createPetWithDietModel)
+                    .collect(Collectors.toList());
+        }
+    }
 
+    private PetWithDietModel createPetWithDietModel(Pet pet)
+    {
         PetModel petModel = petMapper.toModel(pet);
-
         List<PetDiet> petDiets = petDietRepository.findByPet(pet);
         List<PetDietModel> petDietModels = petDiets.stream()
                 .map(petDietMapper::toDModel)
                 .collect(Collectors.toList());
-
         return new PetWithDietModel(petModel, petDietModels);
     }
-
 }

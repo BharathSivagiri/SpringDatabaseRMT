@@ -7,6 +7,8 @@ import com.bharathsivaraman.SpringDatabaseRMT.enums.PetDietStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
 @Component
