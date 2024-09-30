@@ -2,8 +2,8 @@ package com.bharathsivaraman.SpringDatabaseRMT.controller;
 
 import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.BasicValidationException;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
+import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietWithPetInfoModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
-import com.bharathsivaraman.SpringDatabaseRMT.models.PetWithDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 
 import jakarta.validation.Valid;
@@ -90,11 +90,12 @@ public class PetController
 
     //Get All Pets and its Diet by Pet ID
 
-    @GetMapping("/with-diet") //GET
-    public ResponseEntity<List<PetWithDietModel>> getPetsWithDiet(@RequestParam(required = false) Long id) {
-        List<PetWithDietModel> petsWithDiet = petService.getPetsWithDiet(id);
+    @GetMapping("/with-diet")
+    public ResponseEntity<List<PetDietWithPetInfoModel>> getPetsWithDiet(@RequestParam(required = false) Long id) {
+        List<PetDietWithPetInfoModel> petsWithDiet = petService.getPetsWithDiet(id);
         return ResponseEntity.ok(petsWithDiet);
     }
+
 
 
 }

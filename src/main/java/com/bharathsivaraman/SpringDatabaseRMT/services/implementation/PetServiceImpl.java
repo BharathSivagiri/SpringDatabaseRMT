@@ -10,8 +10,8 @@ import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.DateInvalidExcep
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetDietMapper;
 import com.bharathsivaraman.SpringDatabaseRMT.mapper.PetMapper;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
+import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietWithPetInfoModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
-import com.bharathsivaraman.SpringDatabaseRMT.models.PetWithDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.repo.PetDietRepository;
 import com.bharathsivaraman.SpringDatabaseRMT.repo.PetRepository;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
@@ -167,30 +167,27 @@ public class PetServiceImpl implements PetService
     //Pet ID displays all info from two tables
 
     @Override
-    public List<PetWithDietModel> getPetsWithDiet(Long id)
+    public List<PetDietWithPetInfoModel> getPetsWithDiet(Long id)
     {
+        List<Pet> pets;
         if (id != null)
         {
-            Pet pet = petRepository.findById(id)
-                    .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id));
-            return Collections.singletonList(createPetWithDietModel(pet));
+            pets = Collections.singletonList(petRepository.findById(id)
+                    .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id)));
         }
         else
         {
-            List<Pet> allPets = petRepository.findAll();
-            return allPets.stream()
-                    .map(this::createPetWithDietModel)
-                    .collect(Collectors.toList());
+            pets = petRepository.findAll();
         }
+
+        return pets.stream()
+                .flatMap(pet -> {
+                    PetModel petModel = petMapper.toModel(pet);
+                    List<PetDiet> petDiets = petDietRepository.findByPet(pet);
+                    return petDiets.stream()
+                            .map(diet -> new PetDietWithPetInfoModel(petModel, petDietMapper.toDModel(diet)));
+                })
+                .collect(Collectors.toList());
     }
 
-    private PetWithDietModel createPetWithDietModel(Pet pet)
-    {
-        PetModel petModel = petMapper.toModel(pet);
-        List<PetDiet> petDiets = petDietRepository.findByPet(pet);
-        List<PetDietModel> petDietModels = petDiets.stream()
-                .map(petDietMapper::toDModel)
-                .collect(Collectors.toList());
-        return new PetWithDietModel(petModel, petDietModels);
-    }
 }
