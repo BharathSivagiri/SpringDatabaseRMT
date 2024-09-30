@@ -1,18 +1,22 @@
 package com.bharathsivaraman.SpringDatabaseRMT.models;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
-
+@JsonPropertyOrder({"id", "name", "diet"})
 @Data
 public class PetDietWithPetInfoModel
 {
-    private PetModel pet;
+
+    private Long id;
+    private String name;
     private PetDietModel diet;
 
-    public PetDietWithPetInfoModel(PetModel pet, PetDietModel diet)
+    public PetDietWithPetInfoModel(int id, String name, PetDietModel dModel)
     {
-        this.pet = pet;
-        this.diet = diet;
+        this.id = (long) id;
+        this.name = name;
+        this.diet = dModel;
     }
 }
 

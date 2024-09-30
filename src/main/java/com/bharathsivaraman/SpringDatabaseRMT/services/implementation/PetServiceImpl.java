@@ -165,7 +165,6 @@ public class PetServiceImpl implements PetService
     }
 
     //Pet ID displays all info from two tables
-
     @Override
     public List<PetDietWithPetInfoModel> getPetsWithDiet(Long id)
     {
@@ -182,12 +181,14 @@ public class PetServiceImpl implements PetService
 
         return pets.stream()
                 .flatMap(pet -> {
-                    PetModel petModel = petMapper.toModel(pet);
                     List<PetDiet> petDiets = petDietRepository.findByPet(pet);
                     return petDiets.stream()
-                            .map(diet -> new PetDietWithPetInfoModel(petModel, petDietMapper.toDModel(diet)));
+                            .map(diet -> new PetDietWithPetInfoModel(
+                                pet.getId(),
+                                pet.getName(),
+                                petDietMapper.toDModel(diet)
+                            ));
                 })
                 .collect(Collectors.toList());
     }
-
 }
