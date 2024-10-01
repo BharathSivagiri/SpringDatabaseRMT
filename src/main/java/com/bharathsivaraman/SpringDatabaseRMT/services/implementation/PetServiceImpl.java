@@ -18,10 +18,7 @@ import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -229,6 +226,27 @@ public class PetServiceImpl implements PetService
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<Pet> petPage = petRepository.findAll(pageRequest);
+        List<Pet> allPets = petPage.getContent();
+
+        if (startingLetter != null && !startingLetter.isEmpty()) {
+            allPets = allPets.stream()
+                    .filter(pet -> pet.getName().toLowerCase().startsWith(startingLetter.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), allPets.size());
+        List<Pet> pageContent = allPets.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageRequest, allPets.size());
+    }
+
 //    public Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter) {
 //        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 //        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
@@ -241,5 +259,4 @@ public class PetServiceImpl implements PetService
 //
 //        return petRepository.findAll(spec, pageable);
 //    }
-
 }
