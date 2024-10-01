@@ -19,6 +19,8 @@ import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 import java.util.Collections;
@@ -167,29 +169,58 @@ public class PetServiceImpl implements PetService
     //Pet ID displays all info from two tables
 
     @Override
-    public List<PetDietWithPetInfoModel> getPetsWithDiet(Long id)
+    public List<PetDietWithPetInfoModel> getPetsWithDiet(Long id, LocalDate startDate, LocalDate endDate)
     {
-        List<Pet> pets;
-        if (id != null)
-        {
-            pets = Collections.singletonList(petRepository.findById(id)
-                    .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id)));
-        }
-        else
-        {
-            pets = petRepository.findAll();
-        }
+        List<Pet> pets = (id != null)
+                ? Collections.singletonList(petRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Pet not found with id: " + id)))
+                : petRepository.findAll();
+
+        LocalDate effectiveStartDate = startDate != null ? startDate : LocalDate.MIN;
+        LocalDate effectiveEndDate = endDate != null ? endDate : LocalDate.MAX;
 
         return pets.stream()
                 .flatMap(pet -> {
-                    List<PetDiet> petDiets = petDietRepository.findByPet(pet);
+                    List<PetDiet> petDiets = petDietRepository.findByPet(pet).stream()
+                            .filter(diet -> diet.getRecStatus() == DBRecordStatus.ACTIVE
+                                    && !diet.getStartDate().isAfter(effectiveEndDate)
+                                    && !diet.getEndDate().isBefore(effectiveStartDate))
+                            .toList();
                     return petDiets.stream()
                             .map(diet -> new PetDietWithPetInfoModel(
-                                pet.getId(),
-                                pet.getName(),
-                                petDietMapper.toDModel(diet)
+                                    pet.getId(),
+                                    pet.getName(),
+                                    petDietMapper.toDModel(diet)
                             ));
                 })
+                .collect(Collectors.toList());
+    }
+
+    //Pet Diet data record status
+
+    @Override
+    public List<PetDietModel> getAllPetDiets(String status)
+    {
+        List<PetDiet> petDiets;
+        if (status == null || status.equalsIgnoreCase("all"))
+        {
+            petDiets = petDietRepository.findAll();
+        }
+        else if (status.equalsIgnoreCase("active"))
+        {
+            petDiets = petDietRepository.findByRecStatus(DBRecordStatus.ACTIVE);
+        }
+        else if (status.equalsIgnoreCase("inactive"))
+        {
+            petDiets = petDietRepository.findByRecStatus(DBRecordStatus.INACTIVE);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Invalid status. Use 'all', 'active', or 'inactive'.");
+        }
+
+        return petDiets.stream()
+                .map(petDietMapper::toDModel)
                 .collect(Collectors.toList());
     }
 }

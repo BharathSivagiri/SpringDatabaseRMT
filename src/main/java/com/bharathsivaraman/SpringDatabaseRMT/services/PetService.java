@@ -4,6 +4,7 @@ import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietWithPetInfoModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface PetService
@@ -28,7 +29,9 @@ public interface PetService
 
     PetDietModel deletePetDiet(Long dietId);
 
-    List<PetDietWithPetInfoModel> getPetsWithDiet(Long id);
+    List<PetDietWithPetInfoModel> getPetsWithDiet(Long id, LocalDate startDate, LocalDate endDate);
+
+    List<PetDietModel> getAllPetDiets(String status);
 
 
 }

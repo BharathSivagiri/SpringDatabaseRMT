@@ -8,9 +8,12 @@ import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -90,12 +93,24 @@ public class PetController
 
     //Get All Pets and its Diet by Pet ID
 
-    @GetMapping("/with-diet")
-    public ResponseEntity<List<PetDietWithPetInfoModel>> getPetsWithDiet(@RequestParam(required = false) Long id) {
-        List<PetDietWithPetInfoModel> petsWithDiet = petService.getPetsWithDiet(id);
+    @GetMapping("/pets-with-diet") //GET
+    public ResponseEntity<List<PetDietWithPetInfoModel>> getPetsWithDiet(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)
+    {
+        List<PetDietWithPetInfoModel> petsWithDiet = petService.getPetsWithDiet(id, startDate, endDate);
         return ResponseEntity.ok(petsWithDiet);
     }
 
+    //Pet Diet data record status
+
+    @GetMapping("/diets/record-status") //GET
+    public ResponseEntity<List<PetDietModel>> getAllPetDiets(@RequestParam(required = false) String status)
+    {
+        List<PetDietModel> petDiets = petService.getAllPetDiets(status);
+        return ResponseEntity.ok(petDiets);
+    }
 
 
 }
