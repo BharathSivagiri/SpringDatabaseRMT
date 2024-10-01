@@ -18,6 +18,11 @@ import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -223,4 +228,18 @@ public class PetServiceImpl implements PetService
                 .map(petDietMapper::toDModel)
                 .collect(Collectors.toList());
     }
+
+//    public Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter) {
+//        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+//        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+//
+//        Specification<Pet> spec = Specification.where(null);
+//        if (startingLetter != null && !startingLetter.isEmpty()) {
+//            spec = spec.and((root, query, criteriaBuilder) ->
+//                    criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), startingLetter.toLowerCase() + "%"));
+//        }
+//
+//        return petRepository.findAll(spec, pageable);
+//    }
+
 }

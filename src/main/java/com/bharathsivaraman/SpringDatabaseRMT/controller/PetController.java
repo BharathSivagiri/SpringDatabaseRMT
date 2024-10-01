@@ -1,5 +1,6 @@
 package com.bharathsivaraman.SpringDatabaseRMT.controller;
 
+//import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
 import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.BasicValidationException;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietWithPetInfoModel;
@@ -8,6 +9,7 @@ import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+//import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -112,5 +114,17 @@ public class PetController
         return ResponseEntity.ok(petDiets);
     }
 
+    //Pet Diet using paging
+
+//    @GetMapping
+//    public Page<Pet> getPets(
+//            @RequestParam(defaultValue = "0") Integer pageNo,
+//            @RequestParam(defaultValue = "10") Integer pageSize,
+//            @RequestParam(defaultValue = "name") String sortBy,
+//            @RequestParam(defaultValue = "asc") String sortDir,
+//            @RequestParam(required = false) String startingLetter)
+//            {
+//        return petService.getPetsWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir, startingLetter);
+//    }
 
 }
