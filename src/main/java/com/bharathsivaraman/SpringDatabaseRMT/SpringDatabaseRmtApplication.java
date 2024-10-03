@@ -7,13 +7,11 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
 @SpringBootApplication
-@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
-public class SpringDatabaseRmtApplication {
-
+@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO) //Spring Web data support
+public class SpringDatabaseRmtApplication
+{
 	public static void main(String[] args)
 	{
 		SpringApplication.run(SpringDatabaseRmtApplication.class, args);
 	}
-
-
 }
