@@ -247,16 +247,4 @@ public class PetServiceImpl implements PetService
         return new PageImpl<>(pageContent, pageRequest, allPets.size());
     }
 
-//    public Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter) {
-//        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-//        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-//
-//        Specification<Pet> spec = Specification.where(null);
-//        if (startingLetter != null && !startingLetter.isEmpty()) {
-//            spec = spec.and((root, query, criteriaBuilder) ->
-//                    criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), startingLetter.toLowerCase() + "%"));
-//        }
-//
-//        return petRepository.findAll(spec, pageable);
-//    }
 }

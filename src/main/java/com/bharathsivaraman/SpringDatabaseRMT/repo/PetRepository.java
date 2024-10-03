@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository //This annotation is used to indicate that this interface is a repository
-public interface PetRepository extends JpaRepository<Pet, Long>
-//        , JpaSpecificationExecutor<Pet> //Pet is the entity and Long is the primary key type
+public interface PetRepository extends JpaRepository<Pet, Long> //Pet is the entity and Long is the primary key type
 {
     Optional<Pet> findById(int id);
     //This interface extends JpaRepository, which provides CRUD operations for the Pet entity.
