@@ -119,7 +119,7 @@ public class PetController
     //Pet Diet using paging
 
     @GetMapping("/paging")
-    public Page<Pet> getPets(
+    public ResponseEntity<Page<Pet>> getAllPets(
             @RequestParam(required = false) Integer pageNo,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String sortBy,
@@ -127,13 +127,31 @@ public class PetController
             @RequestParam(required = false) String startingLetter)
     {
 
-        return petService.getPetsWithPagingAndSorting(
-                pageNo != null ? pageNo : 0,
-                pageSize != null ? pageSize : 10,
-                sortBy != null ? sortBy : "name",
-                sortDir != null ? sortDir : "asc",
-                startingLetter
-        );
+        pageNo = (pageNo != null) ? pageNo : 0;
+        pageSize = (pageSize != null) ? pageSize : 10;
+        sortBy = (sortBy != null) ? sortBy : "id";
+        sortDir = (sortDir != null) ? sortDir : "asc";
+
+        Page<Pet> pets = petService.getPetsWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir, startingLetter);
+        return new ResponseEntity<>(pets, HttpStatus.OK);
     }
+
+//    @GetMapping("/paging")
+//    public Page<Pet> getPets(
+//            @RequestParam(required = false) Integer pageNo,
+//            @RequestParam(required = false) Integer pageSize,
+//            @RequestParam(required = false) String sortBy,
+//            @RequestParam(required = false) String sortDir,
+//            @RequestParam(required = false) String startingLetter)
+//    {
+//
+//        return petService.getPetsWithPagingAndSorting(
+//                pageNo != null ? pageNo : 0,
+//                pageSize != null ? pageSize : 10,
+//                sortBy != null ? sortBy : "name",
+//                sortDir != null ? sortDir : "asc",
+//                startingLetter
+//        );
+//    }
 
 }
