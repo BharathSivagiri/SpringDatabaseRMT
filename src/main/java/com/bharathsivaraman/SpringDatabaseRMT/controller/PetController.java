@@ -1,7 +1,6 @@
 package com.bharathsivaraman.SpringDatabaseRMT.controller;
 
 //import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
-import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
 import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.BasicValidationException;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietWithPetInfoModel;
@@ -120,8 +119,8 @@ public class PetController
         return ResponseEntity.ok(petDiets);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<Pet>> getPetsWithPagingAndSorting(
+    @GetMapping("/paging")
+    public ResponseEntity<Page<PetModel>> getPetsWithPagingAndSorting(
             @RequestParam(required = false) Integer pageNo,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String sortBy,
@@ -136,7 +135,7 @@ public class PetController
         sortBy = (sortBy != null) ? sortBy : "id";
         sortDir = (sortDir != null) ? sortDir : "asc";
 
-        Page<Pet> pets = petService.getPetsWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir, startingLetter, searchTerm, searchTermOwner);
+        Page<PetModel> pets = petService.getPetsWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir, startingLetter, searchTerm, searchTermOwner);
         return new ResponseEntity<>(pets, HttpStatus.OK);
     }
 

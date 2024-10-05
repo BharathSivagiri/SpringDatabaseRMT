@@ -24,6 +24,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor //@RequiredArgsConstructor is a Lombok annotation that generates a constructor with required arguments for all final fields in the class.
 public class PetServiceImpl implements PetService
 {
+    @Autowired
     private final PetRepository petRepository;
+
+    @Autowired
     private final PetMapper petMapper;
 
     private final PetDietRepository petDietRepository;
@@ -235,8 +239,9 @@ public class PetServiceImpl implements PetService
                 .map(petDietMapper::toDModel)
                 .collect(Collectors.toList());
     }
+
     @Override
-    public Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter, String searchTerm, String searchTermOwner) {
+    public Page<PetModel> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter, String searchTerm, String searchTermOwner) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
@@ -249,15 +254,11 @@ public class PetServiceImpl implements PetService
             predicates.add(cb.like(cb.lower(pet.get("name")), startingLetter.toLowerCase() + "%"));
         }
 
-        // Add search functionality for name
-        if (searchTerm != null && !searchTerm.isEmpty())
-        {
-            predicates.add(cb.like(cb.lower(pet.get("name")),searchTerm.toLowerCase() + "%"));
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            predicates.add(cb.like(cb.lower(pet.get("name")), searchTerm.toLowerCase() + "%"));
         }
 
-        // Add search functionality for owner name
-        if (searchTermOwner != null && !searchTermOwner.isEmpty())
-        {
+        if (searchTermOwner != null && !searchTermOwner.isEmpty()) {
             predicates.add(cb.like(cb.lower(pet.get("ownerName")), searchTermOwner.toLowerCase() + "%"));
         }
 
@@ -271,7 +272,11 @@ public class PetServiceImpl implements PetService
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
 
-        return new PageImpl<>(pets, pageable, pets.size());
+        List<PetModel> petModels = pets.stream()
+                .map(petMapper::toModel)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(petModels, pageable, petModels.size());
     }
 
     @Override

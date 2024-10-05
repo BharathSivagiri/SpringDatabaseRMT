@@ -36,7 +36,7 @@ public interface PetService
 
     List<PetDietModel> getAllPetDiets(String status);
 
-    Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter, String searchTerm, String searchTermOwner);
+    Page<PetModel> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter, String searchTerm, String searchTermOwner);
 
     List<PetModel> searchPets(String name, String type, String ownerName);
 
