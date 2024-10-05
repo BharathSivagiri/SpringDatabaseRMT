@@ -26,7 +26,6 @@ import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -48,7 +47,10 @@ public class PetServiceImpl implements PetService
     @Autowired
     private final PetMapper petMapper;
 
+    @Autowired
     private final PetDietRepository petDietRepository;
+
+    @Autowired
     private final PetDietMapper petDietMapper;
 
     @PersistenceContext
@@ -241,7 +243,9 @@ public class PetServiceImpl implements PetService
     }
 
     @Override
-    public Page<PetModel> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter, String searchTerm, String searchTermOwner) {
+    public Page<PetModel> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter, String searchTerm, String searchTermOwner)
+    {
+        clearHibernateCache();
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
@@ -305,49 +309,9 @@ public class PetServiceImpl implements PetService
     }
 
 
-    // This is a sample implementation using Spring Data JPA's native query support
-
-//    @Override
-//    public Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter) {
-//        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-//        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-//
-//        if (startingLetter != null && !startingLetter.isEmpty())
-//        {
-//            return petRepository.findByNameStartingWithIgnoreCase(startingLetter, pageable);
-//        }
-//        else
-//        {
-//            return petRepository.findAll(pageable);
-//        }
-//    }
-
-//    --------------------------------------
-
-//    @Override
-//    public Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter) {
-//        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-//
-//        // First, get all pets that match the startingLetter filter
-//        List<Pet> filteredPets = petRepository.findAll(sort);
-//        if (startingLetter != null && !startingLetter.isEmpty()) {
-//            filteredPets = filteredPets.stream()
-//                    .filter(pet -> pet.getName().toLowerCase().startsWith(startingLetter.toLowerCase()))
-//                    .collect(Collectors.toList());
-//        }
-//
-//        // Then, manually paginate the filtered results
-//        int start = pageNo * pageSize;
-//        int end = Math.min((start + pageSize), filteredPets.size());
-//
-//        List<Pet> pageContent = filteredPets.subList(start, end);
-//
-//        return new PageImpl<>(pageContent, PageRequest.of(pageNo, pageSize, sort), filteredPets.size());
-//    }
-
     public void clearHibernateCache()
     {
-    entityManager.clear();
+        entityManager.clear();
     }
 }
 

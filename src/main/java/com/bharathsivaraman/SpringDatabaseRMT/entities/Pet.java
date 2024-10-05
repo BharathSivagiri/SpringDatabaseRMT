@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 
 @Entity // This tells Hibernate to make a table out of this class
 @Data // This will generate getters and setters for all the fields

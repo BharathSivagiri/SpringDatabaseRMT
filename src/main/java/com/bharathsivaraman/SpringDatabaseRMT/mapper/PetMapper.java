@@ -4,10 +4,8 @@ import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
 import com.bharathsivaraman.SpringDatabaseRMT.enums.DBRecordStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.enums.PetStatus;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
-
 import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+
 import org.springframework.stereotype.Component;
 
 @Component // This annotation is used to indicate that this class is a Spring component

@@ -2,10 +2,7 @@ package com.bharathsivaraman.SpringDatabaseRMT.repo;
 
 import com.bharathsivaraman.SpringDatabaseRMT.entities.Pet;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -14,8 +11,6 @@ import java.util.Optional;
 public interface PetRepository extends JpaRepository<Pet, Long> //Pet is the entity and Long is the primary key type
 {
     Optional<Pet> findById(int id);
-
-//    Page<Pet> findPetsWithCriteria(String startingLetter, Pageable pageable);
 
     //This interface extends JpaRepository, which provides CRUD operations for the Pet entity.
     //The JpaRepository interface provides methods for creating, reading, updating, and deleting entities.
