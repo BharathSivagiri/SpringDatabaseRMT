@@ -71,18 +71,21 @@ public class PetController
     }
 
     @GetMapping("/diets/all") //GET
+    @ResponseStatus(HttpStatus.OK)
     public List<PetDietModel> getAllPetDiets()
     {
         return petService.getAllPetDiets();
     }
 
     @GetMapping("/diets/{dietId}") //GET
+    @ResponseStatus(HttpStatus.OK)
     public PetDietModel getPetDietById(@PathVariable Long dietId)
     {
         return petService.getPetDietById(dietId);
     }
 
     @PutMapping("/diets/update/{dietId}") //PUT
+    @ResponseStatus(HttpStatus.OK)
     public PetDietModel updatePetDiet(@PathVariable Long dietId, @RequestBody PetDietModel petDietModel)
     {
         return petService.updatePetDiet(dietId, petDietModel);
@@ -98,6 +101,7 @@ public class PetController
     //Get All Pets and its Diet by Pet ID
 
     @GetMapping("/pets-with-diet") //GET
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<PetDietWithPetInfoModel>> getPetsWithDiet(
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -116,15 +120,15 @@ public class PetController
         return ResponseEntity.ok(petDiets);
     }
 
-    //Pet Diet using paging
-
-    @GetMapping("/paging")
-    public ResponseEntity<Page<Pet>> getAllPets(
+    @GetMapping
+    public ResponseEntity<Page<Pet>> getPetsWithPagingAndSorting(
             @RequestParam(required = false) Integer pageNo,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortDir,
-            @RequestParam(required = false) String startingLetter)
+            @RequestParam(required = false) String startingLetter,
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) String searchTermOwner)
     {
 
         pageNo = (pageNo != null) ? pageNo : 0;
@@ -132,8 +136,18 @@ public class PetController
         sortBy = (sortBy != null) ? sortBy : "id";
         sortDir = (sortDir != null) ? sortDir : "asc";
 
-        Page<Pet> pets = petService.getPetsWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir, startingLetter);
+        Page<Pet> pets = petService.getPetsWithPagingAndSorting(pageNo, pageSize, sortBy, sortDir, startingLetter, searchTerm, searchTermOwner);
         return new ResponseEntity<>(pets, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PetModel>> searchPets(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String ownerName)
+    {
+        List<PetModel> pets = petService.searchPets(name, type, ownerName);
+        return ResponseEntity.ok(pets);
     }
 
 //    @GetMapping("/paging")

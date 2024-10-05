@@ -235,10 +235,8 @@ public class PetServiceImpl implements PetService
                 .map(petDietMapper::toDModel)
                 .collect(Collectors.toList());
     }
-
-
     @Override
-    public Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter) {
+    public Page<Pet> getPetsWithPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy, String sortDir, String startingLetter, String searchTerm, String searchTermOwner) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
@@ -251,6 +249,18 @@ public class PetServiceImpl implements PetService
             predicates.add(cb.like(cb.lower(pet.get("name")), startingLetter.toLowerCase() + "%"));
         }
 
+        // Add search functionality for name
+        if (searchTerm != null && !searchTerm.isEmpty())
+        {
+            predicates.add(cb.like(cb.lower(pet.get("name")),searchTerm.toLowerCase() + "%"));
+        }
+
+        // Add search functionality for owner name
+        if (searchTermOwner != null && !searchTermOwner.isEmpty())
+        {
+            predicates.add(cb.like(cb.lower(pet.get("ownerName")), searchTermOwner.toLowerCase() + "%"));
+        }
+
         query.where(predicates.toArray(new Predicate[0]));
         query.orderBy(sort.stream()
                 .map(order -> order.isAscending() ? cb.asc(pet.get(order.getProperty())) : cb.desc(pet.get(order.getProperty())))
@@ -261,13 +271,34 @@ public class PetServiceImpl implements PetService
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
 
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        Root<Pet> petCount = countQuery.from(Pet.class);
-        countQuery.select(cb.count(petCount)).where(predicates.toArray(new Predicate[0]));
-        Long count = entityManager.createQuery(countQuery).getSingleResult();
-
-        return new PageImpl<>(pets, pageable, count);
+        return new PageImpl<>(pets, pageable, pets.size());
     }
+
+    @Override
+    public List<PetModel> searchPets(String name, String type, String ownerName)
+    {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Pet> query = cb.createQuery(Pet.class);
+        Root<Pet> pet = query.from(Pet.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (name != null && !name.isEmpty()) {
+            predicates.add(cb.like(cb.lower(pet.get("name")),name.toLowerCase() + "%"));
+        }
+        if (type != null && !type.isEmpty()) {
+            predicates.add(cb.like(cb.lower(pet.get("type")),type.toLowerCase() + "%"));
+        }
+        if (ownerName != null && !ownerName.isEmpty()) {
+            predicates.add(cb.like(cb.lower(pet.get("ownerName")),ownerName.toLowerCase() + "%"));
+        }
+
+        query.where(predicates.toArray(new Predicate[0]));
+
+        List<Pet> pets = entityManager.createQuery(query).getResultList();
+        return pets.stream().map(petMapper::toModel).collect(Collectors.toList());
+    }
+
 
     // This is a sample implementation using Spring Data JPA's native query support
 
@@ -309,4 +340,11 @@ public class PetServiceImpl implements PetService
 //        return new PageImpl<>(pageContent, PageRequest.of(pageNo, pageSize, sort), filteredPets.size());
 //    }
 
+    public void clearHibernateCache()
+    {
+    entityManager.clear();
+    }
 }
+
+
+
