@@ -259,7 +259,7 @@ public class PetServiceImpl implements PetService
         }
 
         if (searchTerm != null && !searchTerm.isEmpty()) {
-            predicates.add(cb.like(cb.lower(pet.get("name")), searchTerm.toLowerCase() + "%"));
+            predicates.add(cb.like(cb.lower(pet.get("type")), searchTerm.toLowerCase() + "%"));
         }
 
         if (searchTermOwner != null && !searchTermOwner.isEmpty()) {
