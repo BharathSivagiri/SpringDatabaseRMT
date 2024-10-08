@@ -309,6 +309,7 @@ public class PetServiceImpl implements PetService
     }
 
 
+
     public void clearHibernateCache()
     {
         entityManager.clear();

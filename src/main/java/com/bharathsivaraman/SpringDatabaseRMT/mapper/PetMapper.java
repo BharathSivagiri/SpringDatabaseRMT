@@ -24,6 +24,7 @@ public class PetMapper
         pet.setUpdatedDate(DateUtils.convertToDate(petModel.getUpdatedDate()));
         pet.setStatus(PetStatus.valueOf(petModel.getStatus().toUpperCase()));
         pet.setRecStatus(DBRecordStatus.valueOf(petModel.getRecStatus().toUpperCase()));
+        pet.setOwnerEmail(petModel.getOwnerEmail());
         return pet;
     }
 
@@ -42,6 +43,7 @@ public class PetMapper
         petModel.setRecStatus(pet.getRecStatus().name());
         petModel.setStatus(pet.getStatus().name());
         petModel.setAge(String.valueOf(pet.getAge()));
+        petModel.setOwnerEmail(pet.getOwnerEmail());
         return petModel;
     }
 }

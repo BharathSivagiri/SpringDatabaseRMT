@@ -8,6 +8,7 @@ import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PetController
 {
-    private final PetService petService;
+    @Autowired
+    PetService petService;
 
     //Pet API
 

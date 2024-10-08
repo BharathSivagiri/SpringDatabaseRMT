@@ -32,6 +32,9 @@ public class PetModel
     @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "Updated date must be in the format YYYYMMDD")
     private String updatedDate;
 
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Owner email must be a valid email address")
+    private String ownerEmail;
+
     private String recStatus;
     private String status;
     private String age;

@@ -43,6 +43,9 @@ public class Pet
     @Column(name = "updated_date", nullable = false)
     private LocalDate updatedDate;
 
+    @Column(name = "owner_email", nullable = false)
+    private String ownerEmail;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private PetStatus status;
@@ -50,7 +53,6 @@ public class Pet
     @Enumerated(EnumType.STRING)
     @Column(name = "record_status")
     private DBRecordStatus recStatus;
-
 
     @Transient
     public Integer age;
