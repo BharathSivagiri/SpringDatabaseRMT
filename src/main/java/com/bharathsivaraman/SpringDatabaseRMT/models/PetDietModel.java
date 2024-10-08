@@ -1,6 +1,5 @@
 package com.bharathsivaraman.SpringDatabaseRMT.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -8,7 +7,6 @@ import lombok.Data;
 @Data
 public class PetDietModel
 {
-    @JsonIgnore //This annotation is used to ignore the field when serializing the object to JSON
     private String id;
 
     private String dietId;

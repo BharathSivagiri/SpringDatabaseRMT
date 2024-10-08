@@ -24,7 +24,7 @@ import java.util.List;
 public class PetController
 {
     @Autowired
-    PetService petService;
+    private final PetService petService;
 
     //Pet API
 
@@ -147,5 +147,12 @@ public class PetController
     {
         List<PetModel> pets = petService.searchPets(name, type, ownerName);
         return ResponseEntity.ok(pets);
+    }
+
+    @PostMapping("/send-email/{id}")
+    public ResponseEntity<String> sendPetInfoEmail(@PathVariable Long id) throws BasicValidationException
+    {
+        petService.sendPetInfoEmail(id);
+        return ResponseEntity.ok("Email sent successfully to user." + id);
     }
 }

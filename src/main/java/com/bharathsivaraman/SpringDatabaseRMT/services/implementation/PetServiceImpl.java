@@ -17,6 +17,8 @@ import com.bharathsivaraman.SpringDatabaseRMT.repo.PetRepository;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -26,7 +28,11 @@ import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -52,6 +58,12 @@ public class PetServiceImpl implements PetService
 
     @Autowired
     private final PetDietMapper petDietMapper;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
+    private TemplateEngine tempEngine;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -121,10 +133,11 @@ public class PetServiceImpl implements PetService
     @Override
     public PetDietModel createPetDiet(PetDietModel petDietModel)
     {
-       Optional<Pet> petOptional = petRepository.findById(Integer.parseInt(petDietModel.getId()));
+        Long id = Long.valueOf(petDietModel.getId());
+        Optional<Pet> petOptional = petRepository.findById(id);
         if (petOptional.isEmpty())
         {
-            throw new IllegalArgumentException("Pet not found with id: " + petDietModel.getId());
+            throw new IllegalArgumentException("Pet not found with id: " + id);
         }
         PetDiet petDiet = petDietMapper.toDEntity(petDietModel,petOptional.get());
         PetDiet savedPetDiet = petDietRepository.save(petDiet);
@@ -308,6 +321,38 @@ public class PetServiceImpl implements PetService
         return pets.stream().map(petMapper::toModel).collect(Collectors.toList());
     }
 
+    @Override
+    public void sendPetInfoEmail(Long id)
+    {
+        Pet pet = petRepository.findById(id).orElseThrow(() -> new RuntimeException("Pet not found with ID: " + id));
+
+        List<PetDiet> petDiet = petDietRepository.findByPetId(id);
+
+        Context context = new Context();
+        context.setVariable("name", pet.getName());
+        context.setVariable("type", pet.getType());
+        context.setVariable("ownerName", pet.getOwnerName());
+        context.setVariable("ownerEmail", pet.getOwnerEmail());
+        context.setVariable("petDiet", petDiet);
+
+        String emailContent = tempEngine.process("pet-diet-email", context);
+
+        MimeMessage mailMessage = mailSender.createMimeMessage();
+        MimeMessageHelper help = new MimeMessageHelper(mailMessage);
+
+        try
+        {
+            help.setTo(pet.getOwnerEmail());
+            help.setSubject("Pet Diet Information");
+            help.setText(emailContent, true);
+            mailSender.send(mailMessage);
+        }
+         catch (MessagingException e)
+         {
+             throw new RuntimeException("Failed to send email", e);
+         }
+
+    }
 
 
     public void clearHibernateCache()

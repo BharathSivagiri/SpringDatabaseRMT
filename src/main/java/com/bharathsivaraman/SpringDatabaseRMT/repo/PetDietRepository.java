@@ -14,6 +14,8 @@ public interface PetDietRepository extends JpaRepository<PetDiet, Long>
 {
     List<PetDiet> findByPet(Pet pet);
 
+    List<PetDiet> findByPetId(Long id);
+
     List<PetDiet> findByRecStatus(DBRecordStatus recStatus);
 
     // This interface extends JpaRepository, which provides CRUD operations for the PetDiet entity.

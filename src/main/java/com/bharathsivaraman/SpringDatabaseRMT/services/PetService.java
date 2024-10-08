@@ -38,5 +38,6 @@ public interface PetService
 
     List<PetModel> searchPets(String name, String type, String ownerName);
 
+    void sendPetInfoEmail(Long id);
 
 }
