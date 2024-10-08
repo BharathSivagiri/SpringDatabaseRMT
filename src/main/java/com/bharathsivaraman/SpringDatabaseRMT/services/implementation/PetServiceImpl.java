@@ -27,9 +27,11 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -351,9 +353,20 @@ public class PetServiceImpl implements PetService
          {
              throw new RuntimeException("Failed to send email", e);
          }
-
     }
 
+    @Value("${scheduler.enabled}")
+    private boolean isSchedulerEnabled;
+
+    @Scheduled(cron = "${scheduler.cron}")
+    public void scheduleDailyPetInfoEmail() {
+        if (isSchedulerEnabled) {
+            List<Pet> allPets = petRepository.findAll();
+            for (Pet pet : allPets) {
+                sendPetInfoEmail((long) pet.getId());
+            }
+        }
+    }
 
     public void clearHibernateCache()
     {
