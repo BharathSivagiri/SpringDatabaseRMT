@@ -14,6 +14,7 @@ import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietWithPetInfoModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
 import com.bharathsivaraman.SpringDatabaseRMT.repo.PetDietRepository;
 import com.bharathsivaraman.SpringDatabaseRMT.repo.PetRepository;
+import com.bharathsivaraman.SpringDatabaseRMT.services.LogService;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 import com.bharathsivaraman.SpringDatabaseRMT.utility.DateUtils;
 
@@ -25,6 +26,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,12 +39,10 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service //@Service is a specialization of the @Component annotation that indicates that it's a service class.
@@ -67,18 +67,32 @@ public class PetServiceImpl implements PetService
     @Autowired
     private TemplateEngine tempEngine;
 
+    @Autowired
+    private final LogService logService;
+
     @PersistenceContext
     private EntityManager entityManager;
 
     //Pet API Service Implementation
+
+    @Autowired
+    private Validator validator;
 
     @Override
     public PetModel createPet(PetModel petModel)
     {
         Pet pet = petMapper.toEntity(petModel);
         Pet savedPet = petRepository.save(pet);
+
+        logService.logApiCall(
+                petModel.getOwnerName(),
+                "API Pet Creation",
+                "Created Successfully",
+                ZonedDateTime.now()
+        );
         return petMapper.toModel(savedPet);
     }
+
 
     @Override
     public PetModel getPetById(Long id)
@@ -117,6 +131,14 @@ public class PetServiceImpl implements PetService
         }
 
         Pet updatedPet = petRepository.save(existingPet);
+
+        logService.logApiCall(
+                petModel.getOwnerName(),
+                "API Pet Update",
+                "Updated Successfully",
+                ZonedDateTime.now()
+        );
+
         return petMapper.toModel(updatedPet);
     }
 
