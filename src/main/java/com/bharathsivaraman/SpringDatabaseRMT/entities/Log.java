@@ -27,6 +27,6 @@ public class Log
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "errors")
+    @Column(name = "errors_and_feedback_messages")
     private String errors;
 }

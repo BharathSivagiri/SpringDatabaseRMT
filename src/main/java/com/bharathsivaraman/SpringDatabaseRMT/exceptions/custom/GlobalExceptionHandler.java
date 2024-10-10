@@ -1,6 +1,7 @@
 package com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom;
 
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
+import com.bharathsivaraman.SpringDatabaseRMT.services.implementation.PetServiceImpl;
 import com.bharathsivaraman.SpringDatabaseRMT.utility.constants.ErrorResponse;
 import com.bharathsivaraman.SpringDatabaseRMT.services.LogService;
 
@@ -21,6 +22,9 @@ public class GlobalExceptionHandler
     @Autowired
     private LogService logService;
 
+    @Autowired
+    private PetServiceImpl petService;
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request)
@@ -36,11 +40,11 @@ public class GlobalExceptionHandler
         );
 
         String finalErrorMessage = errorMessages.toString();
-        String apiName = request.getRequestURI(); // Use the request URI as the API name
+        String apiName = getApiNameFromUri(request.getRequestURI());// Use the request URI as the API name
 
         logService.logApiCall(
-                "Name : " + petModel.getOwnerName(),
-                "API : " + apiName,
+                petModel.getOwnerName(),
+                apiName,
                 finalErrorMessage,
                 ZonedDateTime.now()
         );
@@ -62,7 +66,8 @@ public class GlobalExceptionHandler
 
     @ExceptionHandler(BasicValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleBasicValidationException(BasicValidationException ex) {
+    public ResponseEntity<ErrorResponse> handleBasicValidationException(BasicValidationException ex)
+    {
         ErrorResponse errorResponse = new ErrorResponse() {
             @Override
             public String getMessage()
@@ -78,6 +83,56 @@ public class GlobalExceptionHandler
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    private String getApiNameFromUri(String uri)
+    {
+        switch (uri)
+        {
+            //API Pet Entity
+
+            case "/api/pets/add":
+                return "Pet Creation";
+            case "/api//petId/{id}":
+                return "Pet by ID";
+            case "/api/pets/all":
+                return "All Pets";
+            case "/api/pets/put/{id}":
+                return "Pet Update";
+            case "/api/pets/delete/{}":
+                return "Pet Deletion";
+
+            //API Pet Diet Entity
+
+            case "/api/pets/diets/add":
+                return "Pet Diet Creation";
+            case "/api/pets/diets/all":
+                return "All Pet Diets";
+            case "/api/pets/diets/{dietId}":
+                return "Pet Diet by ID";
+            case "/api/pets/diets/update/{dietId}":
+                return "Pet Diet Update";
+            case "/api/pets/diets/delete/{dietId}":
+                return "Pet Diet Deletion";
+            case "/api/pets/pets-with-diet":
+                return "Pet with Pet diet";
+
+            //Pet diet data record status
+
+            case "/api/pets/diets/record-status":
+                return "Pet Diet Record Status";
+            case "/api/pets/paging":
+                return "Paging and Sorting";
+            case "/api/search":
+                return "Search Pet with Pet Info";
+            case "/api/pets/send-email/{id}":
+                return "Email Service";
+
+
+            default:
+                return "Unknown API";
+        }
+    }
+
 }
 
 

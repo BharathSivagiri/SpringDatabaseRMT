@@ -4,7 +4,6 @@ import com.bharathsivaraman.SpringDatabaseRMT.exceptions.custom.BasicValidationE
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetDietWithPetInfoModel;
 import com.bharathsivaraman.SpringDatabaseRMT.models.PetModel;
-import com.bharathsivaraman.SpringDatabaseRMT.services.LogService;
 import com.bharathsivaraman.SpringDatabaseRMT.services.PetService;
 
 import jakarta.validation.Valid;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
@@ -27,9 +25,6 @@ public class PetController
 {
     @Autowired
     private final PetService petService;
-
-    @Autowired
-    private final LogService logService;
 
     //Pet API
 
