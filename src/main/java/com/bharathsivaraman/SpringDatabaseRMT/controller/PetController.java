@@ -30,7 +30,7 @@ public class PetController
 
     @PostMapping("/add") //POST
     @ResponseStatus(HttpStatus.CREATED)
-    public PetModel createPet(@Valid @RequestBody PetModel petModel)
+    public PetModel createPet(@RequestHeader(required = false) String tenantReference, @RequestHeader(required = false) String employeeId, @Valid @RequestBody(required = false) PetModel petModel)
     {
             return petService.createPet(petModel);
     }
