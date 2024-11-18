@@ -38,13 +38,7 @@ public class GlobalRequestAspect {
             Class<?>[] parameterTypes = signature.getParameterTypes();
 
             // Find the model class (usually the last parameter)
-            Class<?> targetClass = null;
-            for (Class<?> paramType : parameterTypes) {
-                if (paramType.getSimpleName().endsWith("Model")) {
-                    targetClass = paramType;
-                    break;
-                }
-            }
+            Class<?> targetClass = parameterTypes.length > 0 ? parameterTypes[parameterTypes.length - 1] : null;
 
             if (targetClass == null) {
                 throw new IllegalArgumentException("No model class found in method parameters");
@@ -54,33 +48,57 @@ public class GlobalRequestAspect {
 
             // Extract headers
             Map<String, String> headers = new HashMap<>();
-            JsonNode headersNode = rootNode.path("headers");
-            Iterator<Map.Entry<String, JsonNode>> headerFields = headersNode.fields();
-            while (headerFields.hasNext()) {
-                Map.Entry<String, JsonNode> field = headerFields.next();
-                if (!field.getValue().asText().isEmpty()) {
-                    headers.put(field.getKey(), field.getValue().asText());
-                }
-            }
+            this.setHeader(rootNode, headers);
+
+            // Extract param
+            Map<String, String> param = new HashMap<>();
+            this.setParam(rootNode, param);
 
             // Get request body and convert to target class
             JsonNode requestBodyNode = rootNode.path("requestBody");
-            Object requestBody = objectMapper.treeToValue(requestBodyNode, targetClass);
-
+            Object requestBody = null;
+            if (!requestBodyNode.isEmpty()){
+                requestBody = objectMapper.treeToValue(requestBodyNode, targetClass);
+            }
             // Create arguments array
             Object[] arguments = new Object[parameterTypes.length];
             int headerIndex = 0;
+            int paramIndex = 0;
             for (int i = 0; i < parameterTypes.length; i++) {
-                if (parameterTypes[i].equals(targetClass)) {
+                if (parameterTypes[i].equals(targetClass) && requestBody != null) {
                     arguments[i] = requestBody;
                 } else if (headerIndex < headers.size()) {
                     arguments[i] = headers.values().toArray()[headerIndex++];
+                } else if (!param.isEmpty()) {
+                    arguments[i] = param.values().toArray()[paramIndex++];
                 }
             }
 
             return joinPoint.proceed(arguments);
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid data in x-encrypt header: " + e.getMessage());
+        }
+    }
+
+    private void setHeader(JsonNode rootNode, Map<String, String> headers) {
+        JsonNode headersNode = rootNode.path("headers");
+        Iterator<Map.Entry<String, JsonNode>> headerFields = headersNode.fields();
+        while (headerFields.hasNext()) {
+            Map.Entry<String, JsonNode> field = headerFields.next();
+            if (!field.getValue().asText().isEmpty()) {
+                headers.put(field.getKey(), field.getValue().asText());
+            }
+        }
+    }
+
+    public void setParam(JsonNode rootNode , Map<String, String> param) {
+        JsonNode paramNode = rootNode.path("requestParam");
+        Iterator<Map.Entry<String, JsonNode>> paramFields = paramNode.fields();
+        while (paramFields.hasNext()) {
+            Map.Entry<String, JsonNode> field = paramFields.next();
+            if (!field.getValue().asText().isEmpty()) {
+                param.put(field.getKey(), field.getValue().asText());
+            }
         }
     }
 }

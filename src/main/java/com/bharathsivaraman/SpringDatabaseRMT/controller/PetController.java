@@ -30,15 +30,16 @@ public class PetController
 
     @PostMapping("/add") //POST
     @ResponseStatus(HttpStatus.CREATED)
-    public PetModel createPet(@RequestHeader(required = false) String tenantReference, @RequestHeader(required = false) String employeeId, @Valid @RequestBody(required = false) PetModel petModel)
+    public PetModel createPet(@RequestHeader String  tenantReference, @Valid @RequestBody(required = false) PetModel petModel)
     {
             return petService.createPet(petModel);
     }
 
-    @GetMapping("/petId/{id}") //GET
-    public PetModel getPetById(@PathVariable Long id)
+    @GetMapping("/petId") //GET
+    public PetModel getPetById(@RequestHeader String  tenantReference,@RequestParam(required = false) String id)
     {
-        return petService.getPetById(id);
+        System.out.println(tenantReference +"   "+ id);
+        return petService.getPetById(Long.valueOf(id));
     }
 
     @GetMapping("/all") //GET
@@ -48,7 +49,7 @@ public class PetController
     }
 
     @PutMapping("/put/{id}") //PUT
-    public PetModel updatePet(@PathVariable Long id, @RequestBody PetModel petModel)
+    public PetModel updatePet(@PathVariable Long id, @RequestBody(required = false) PetModel petModel)
     {
         return petService.updatePet(id, petModel);
     }
